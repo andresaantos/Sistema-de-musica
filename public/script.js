@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000';
+const API_URL = 'https://sistema-de-musica.onrender.com';
 
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
   
