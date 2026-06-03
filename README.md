@@ -11,5 +11,5 @@ Uma API RESTful desenvolvida em Node.js que gerencia a autenticação de usuári
 ## 💻 Como testar a aplicação
 1. Baixe ou clone este repositório.
 2. Abra o arquivo `index.html` (dentro da pasta `public`) no seu navegador.
-3. Teste qualquer possivel emai e senha, que irá notificar que o mesmo foi cadastrado.
+3. Teste qualquer possivel email e senha, que irá notificar que o mesmo foi cadastrado.
 4. O Front-end se conectará automaticamente à API hospedada na nuvem!
