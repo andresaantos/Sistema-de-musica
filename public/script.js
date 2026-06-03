@@ -25,12 +25,12 @@ document.getElementById('formularioLogin').addEventListener('submit', async (e) 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
   });
-  const data = await response.json();
   if (response.ok) {
+    const data = await response.json();
     localStorage.setItem('token', data.token);
     alert('Login successful!');
   } else {
-    alert('Login failed: ' + data.message);
+    alert('Login failed: Credenciais inválidas');
   }
 });
 
