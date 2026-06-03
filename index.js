@@ -7,6 +7,7 @@ const authRoutes = require('./src/routes/authRoutes')
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public'));
 app.use('/', authRoutes);
 
 app.listen(porta, () => {
