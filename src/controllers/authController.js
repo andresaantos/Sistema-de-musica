@@ -1,81 +1,53 @@
-const API_URL = 'https://sistema-de-musica.onrender.com';
+const pool = require('../config/db');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-document.getElementById('formularioRegistro').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('emailRegistro').value;
-  const password = document.getElementById('senhaRegistro').value;
+const SECRET_KEY = process.env.JWT_SECRET || 'secreta';
 
-  try {
-    const response = await fetch(`${API_URL}/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    if (response.ok) {
-      alert('Usuário registrado com sucesso!');
-    } else {
-      const msg = await response.text();
-      alert('Erro ao registrar: ' + msg);
-    }
-  } catch (error) {
-    console.error('Erro na requisição de registro:', error);
-    alert('Erro ao conectar com o servidor.');
-  }
-});
-
-document.getElementById('formularioLogin').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = document.getElementById('emailLogin').value;
-  const password = document.getElementById('senhaLogin').value;
+// Registro de usuário
+exports.register = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    const response = await fetch(`${API_URL}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem('token', data.token);
-      alert('Login realizado com sucesso!');
-    } else {
-      alert('Falha no login: Credenciais inválidas');
+    const userCheck = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    if (userCheck.rows.length > 0) {
+      return res.status(400).send('Usuário já existe');
     }
-  } catch (error) {
-    console.error('Erro na requisição de login:', error);
-    alert('Erro ao conectar com o servidor.');
-  }
-});
 
-document.getElementById('btnObterMusicas').addEventListener('click', async () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Por favor, faça login primeiro!');
-    return;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+      'INSERT INTO usuarios (email, senha) VALUES ($1, $2)',
+      [email, hashedPassword]
+    );
+
+    return res.status(201).send('Usuário cadastrado com sucesso');
+  } catch (error) {
+    console.error('Erro no registro:', error);
+    return res.status(500).send('Erro no servidor');
   }
+};
+
+// Login de usuário
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    const response = await fetch(`${API_URL}/musicas`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (response.ok) {
-      const musicas = await response.json();
-      const listaMusicas = document.getElementById('listaMusicas');
-      listaMusicas.innerHTML = '';
-      musicas.forEach(musica => {
-        const li = document.createElement('li');
-        li.textContent = `${musica.titulo} - ${musica.artista}`;
-        listaMusicas.appendChild(li);
-      });
-    } else {
-      const erroTexto = await response.text();
-      alert('Erro ao buscar músicas: ' + erroTexto);
+    const result = await pool.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(401).send('Credenciais inválidas');
     }
+
+    const user = result.rows[0];
+    const isPasswordValid = await bcrypt.compare(password, user.senha);
+
+    if (!isPasswordValid) {
+      return res.status(401).send('Credenciais inválidas');
+    }
+
+    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, { expiresIn: '1h' });
+    return res.json({ token });
   } catch (error) {
-    console.error('Erro ao buscar músicas:', error);
-    alert('Erro ao conectar com o servidor.');
+    console.error('Erro no login:', error);
+    return res.status(500).send('Erro no servidor');
   }
-});
+};
