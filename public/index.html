@@ -1,30 +1,40 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Música</title>
+  <title>Sistema de Músicas</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Sistema de Música</h1>
 
-  <h2>Register</h2>
-  <form id="formularioRegistro">
-    <input type="email" id="emailRegistro" placeholder="Email" required>
-    <input type="password" id="senhaRegistro" placeholder="Password" required>
-    <button type="submit">Register</button>
-  </form>
+  <div class="card-container">
+    <h1>🎵 Sistema de Músicas</h1>
 
-  <h2>Login</h2>
-  <form id="formularioLogin">
-    <input type="email" id="emailLogin" placeholder="Email" required>
-    <input type="password" id="senhaLogin" placeholder="Password" required>
-    <button type="submit">Login</button>
-  </form>
+    <div class="card-section">
+      <h2>Criar Conta</h2>
+      <form id="formularioRegistro">
+        <input type="email" id="emailRegistro" placeholder="Email" required>
+        <input type="password" id="senhaRegistro" placeholder="Password" required>
+        <button type="submit">Register</button>
+      </form>
+    </div>
 
-  <h2>Musicas</h2>
-  <button id="btnObterMusicas">Obter Musicas</button>
-  <ul id="listaMusicas"></ul>
+    <div class="card-section">
+      <h2>Acessar Conta</h2>
+      <form id="formularioLogin">
+        <input type="email" id="emailLogin" placeholder="Email" required>
+        <input type="password" id="senhaLogin" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+
+    <div class="card-section">
+      <h2>Músicas</h2>
+      <button id="btnObterMusicas">Obter Musicas</button>
+      <ul id="listaMusicas"></ul>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
