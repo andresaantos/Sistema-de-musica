@@ -1,4 +1,23 @@
 const API_URL = 'https://sistema-de-musica.onrender.com';
+const token = localStorage.getItem('token');
+
+fetch(`${API_URL}/musicas`, {
+  method: 'GET',
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+})
+.then(async res => {
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText);
+  }
+  return res.json();
+})
+.then(data => {
+  console.log('Músicas:', data);
+})
+.catch(err => console.error('Erro ao buscar músicas:', err.message));
 
 document.getElementById('formularioRegistro').addEventListener('submit', async (e) => {
   e.preventDefault();
