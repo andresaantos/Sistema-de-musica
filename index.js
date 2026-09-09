@@ -7,8 +7,11 @@ const authRoutes = require('./src/routes/authRoutes')
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static('public'));
 app.use('/', authRoutes);
+
+app.get('/', (req, res) => {
+  res.send('API do Sistema de Músicas rodando com sucesso!');
+});
 
 app.listen(porta, () => {
   console.log(`Servidor rodando em: ${porta}`)
