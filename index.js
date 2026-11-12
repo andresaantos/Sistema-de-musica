@@ -16,3 +16,5 @@ app.get('/', (req, res) => {
 app.listen(porta, () => {
   console.log(`Servidor rodando em: ${porta}`)
 });
+
+module.exports = app;
